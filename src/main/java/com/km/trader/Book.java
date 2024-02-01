@@ -1,4 +1,6 @@
-package com.km.model;
+package com.km.trader;
+
+import com.km.model.Order;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,9 +12,11 @@ public class Book {
     private static final String BLANK = "                  ";
     private static final String SEPARATOR = " | ";
     private static final String END_LINE = "\n";
+    private static final String BUY_FORMAT = "% ,11d % 6d";
+    private static final String SELL_FORMAT = "% 6d % ,11d";
 
-    private final LinkedList<Order> buy;
-    private final LinkedList<Order> sell;
+    final LinkedList<Order> buy;
+    final LinkedList<Order> sell;
 
     public Book(List<Order> buy, List<Order> sell) {
         this.buy = new LinkedList<>(buy);
@@ -46,12 +50,12 @@ public class Book {
     private String buyToString(Order o) {
         if (o == null)
             return BLANK;
-        return String.format(Locale.ENGLISH, "% ,11d % 6d", o.getQuantity(), o.getPrice());
+        return String.format(Locale.ENGLISH, BUY_FORMAT, o.getQuantity(), o.getPrice());
     }
 
     private String sellToString(Order o) {
         if (o == null)
             return BLANK;
-        return String.format(Locale.ENGLISH, "% 6d % ,11d", o.getPrice(), o.getQuantity());
+        return String.format(Locale.ENGLISH, SELL_FORMAT, o.getPrice(), o.getQuantity());
     }
 }

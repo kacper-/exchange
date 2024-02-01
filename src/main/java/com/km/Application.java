@@ -1,10 +1,10 @@
 package com.km;
 
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.km.model.Book;
 import com.km.model.Order;
-import com.km.model.TradeLog;
+import com.km.trader.Book;
 import com.km.trader.BookBuilder;
+import com.km.trader.TradeLog;
 import com.km.trader.Trader;
 
 import java.io.IOException;
