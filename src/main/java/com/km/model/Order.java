@@ -12,26 +12,35 @@ public class Order {
     public Order() {
     }
 
-    public Order(String id, String type, long price, long quantity) {
-        this.id = id;
-        this.type = type;
-        this.price = price;
-        this.quantity = quantity;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getType() {
         return type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public long getPrice() {
         return price;
     }
 
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
     public long getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 }
