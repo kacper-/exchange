@@ -6,10 +6,7 @@ import com.km.model.Order;
 import com.km.model.Trade;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Trader {
     private final List<Trade> log = new ArrayList<>();
@@ -17,8 +14,8 @@ public class Trader {
     private final LinkedList<Order> sell;
 
     public Trader(Map<String, List<Order>> book) {
-        this.buy = new LinkedList<>(book.get(BookBuilder.BUY));
-        this.sell = new LinkedList<>(book.get(BookBuilder.SELL));
+        this.buy = new LinkedList<>(book.getOrDefault(BookBuilder.BUY, Collections.emptyList()));
+        this.sell = new LinkedList<>(book.getOrDefault(BookBuilder.SELL, Collections.emptyList()));
     }
 
     public String trade() throws IOException {
