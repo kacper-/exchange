@@ -1,30 +1,20 @@
-package com.km.trader;
+package com.km.loggers;
 
 import com.km.model.Order;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-public class Book {
-    public static final String BUY = "B";
-    public static final String SELL = "S";
+public class BookLogger {
+
     private static final String BLANK = "                  ";
     private static final String SEPARATOR = " | ";
     private static final String END_LINE = "\n";
     private static final String BUY_FORMAT = "% ,11d % 6d";
     private static final String SELL_FORMAT = "% 6d % ,11d";
 
-    final LinkedList<Order> buy;
-    final LinkedList<Order> sell;
 
-    public Book(List<Order> buy, List<Order> sell) {
-        this.buy = new LinkedList<>(buy);
-        this.sell = new LinkedList<>(sell);
-    }
-
-    @Override
-    public String toString() {
+    public static StringBuilder log(List<Order> buy, List<Order> sell) {
         int bigger = Math.max(buy.size(), sell.size());
         int smaller = Math.min(buy.size(), sell.size());
         boolean buyIsLonger = bigger == buy.size();
@@ -44,16 +34,16 @@ public class Book {
             b.append(END_LINE);
         }
 
-        return b.toString();
+        return b;
     }
 
-    private String buyToString(Order o) {
+    private static String buyToString(Order o) {
         if (o == null)
             return BLANK;
         return String.format(Locale.ENGLISH, BUY_FORMAT, o.getQuantity(), o.getPrice());
     }
 
-    private String sellToString(Order o) {
+    private static String sellToString(Order o) {
         if (o == null)
             return BLANK;
         return String.format(Locale.ENGLISH, SELL_FORMAT, o.getPrice(), o.getQuantity());

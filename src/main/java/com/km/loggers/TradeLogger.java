@@ -1,28 +1,21 @@
-package com.km.trader;
+package com.km.loggers;
 
 import com.km.model.Trade;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TradeLog {
+public class TradeLogger {
     private static final String END_LINE = "\n";
     private static final String PREFIX = "trade ";
     private static final String SEPARATOR = ",";
-    private final List<Trade> log = new ArrayList<>();
 
-    public void add(Trade trade) {
-        log.add(trade);
-    }
-
-    @Override
-    public String toString() {
+    public static StringBuilder log(List<Trade> trades) {
         StringBuilder b = new StringBuilder();
-        log.forEach(t -> addLine(b, t));
-        return b.toString();
+        trades.forEach(t -> addLine(b, t));
+        return b;
     }
 
-    private void addLine(StringBuilder b, Trade trade) {
+    private static void addLine(StringBuilder b, Trade trade) {
         b.append(PREFIX);
         b.append(trade.getBuyId());
         b.append(SEPARATOR);

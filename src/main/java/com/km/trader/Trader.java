@@ -1,35 +1,50 @@
 package com.km.trader;
 
+import com.km.loggers.BookLogger;
+import com.km.loggers.TradeLogger;
 import com.km.model.Order;
 import com.km.model.Trade;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class Trader {
-    public static TradeLog trade(Book book) {
-        TradeLog tradeLog = new TradeLog();
+    private final List<Trade> log = new ArrayList<>();
+    private final LinkedList<Order> buy;
+    private final LinkedList<Order> sell;
 
-        while (isTradeAvailable(book))
-            settle(book, tradeLog);
-
-        return tradeLog;
+    public Trader(Map<String, List<Order>> book) {
+        this.buy = new LinkedList<>(book.get(BookBuilder.BUY));
+        this.sell = new LinkedList<>(book.get(BookBuilder.SELL));
     }
 
-    private static void settle(Book book, TradeLog tradeLog) {
-        Order buy = book.buy.remove();
-        Order sell = book.sell.remove();
+    public String trade() throws IOException {
+        while (isTradeAvailable())
+            settle();
 
-        long min = Math.min(buy.getQuantity(),sell.getQuantity());
-        tradeLog.add(new Trade(buy.getId(), sell.getId(), sell.getPrice(), min));
-
-        if (min < buy.getQuantity())
-            book.buy.push(new Order(buy.getId(), buy.getType(), buy.getPrice(), buy.getQuantity() - min));
-        if (min < sell.getQuantity())
-            book.sell.push(new Order(sell.getId(), sell.getType(), sell.getPrice(), sell.getQuantity() - min));
+        return TradeLogger.log(log).append(BookLogger.log(buy, sell)).toString();
     }
 
-    private static boolean isTradeAvailable(Book book) {
-        if (book.buy.isEmpty() || book.sell.isEmpty())
+    private void settle() {
+        Order b = buy.remove();
+        Order s = sell.remove();
+
+        long min = Math.min(b.getQuantity(), s.getQuantity());
+        log.add(new Trade(b.getId(), s.getId(), s.getPrice(), min));
+
+        if (min < b.getQuantity())
+            buy.push(new Order(b.getId(), b.getType(), b.getPrice(), b.getQuantity() - min));
+        if (min < s.getQuantity())
+            sell.push(new Order(s.getId(), s.getType(), s.getPrice(), s.getQuantity() - min));
+    }
+
+    private boolean isTradeAvailable() {
+        if (buy.isEmpty() || sell.isEmpty())
             return false;
 
-        return book.buy.peek().getPrice() >= book.sell.peek().getPrice();
+        return buy.peek().getPrice() >= sell.peek().getPrice();
     }
 }

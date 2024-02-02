@@ -1,25 +1,37 @@
 package com.km.trader;
 
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.km.model.Order;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class BookBuilder {
-    public static Book build(Iterator<Order> iterator) {
-        Spliterator<Order> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
+    public static final String BUY = "B";
+    public static final String SELL = "S";
 
-        Map<String, List<Order>> allOrders =
-                StreamSupport.stream(spliterator, false)
-                        .collect(Collectors.groupingBy(Order::getType));
+    public static Map<String, List<Order>> buildFromSTDIN() throws IOException {
+        List<Order> list = new ArrayList<>();
+        Iterator<Order> iterator = readFromIn();
+        iterator.forEachRemaining(list::add);
 
-        List<Order> buy = allOrders.get(Book.BUY);
-        List<Order> sell = allOrders.get(Book.SELL);
+        Map<String, List<Order>> book = list.stream().collect(Collectors.groupingBy(Order::getType));
 
-        buy.sort(Comparator.comparingLong(Order::getPrice).reversed());
-        sell.sort(Comparator.comparingLong(Order::getPrice));
+        book.putIfAbsent(BUY, Collections.emptyList());
+        book.putIfAbsent(SELL, Collections.emptyList());
+        book.get(BUY).sort(Comparator.comparingLong(Order::getPrice).reversed());
+        book.get(SELL).sort(Comparator.comparingLong(Order::getPrice));
 
-        return new Book(buy, sell);
+        return book;
+    }
+
+    private static Iterator<Order> readFromIn() throws IOException {
+        return new CsvMapper()
+                .readerWithTypedSchemaFor(Order.class)
+                .with(CsvParser.Feature.SKIP_EMPTY_LINES)
+                .readValues(new InputStreamReader(System.in));
     }
 }
