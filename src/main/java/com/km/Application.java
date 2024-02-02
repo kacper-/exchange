@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Application {
     public static void main(String[] args) {
         try {
-            Trader trader = new Trader(BookBuilder.buildFromSTDIN());
+            Trader trader = new Trader(BookBuilder.fromStream(System.in));
             System.out.print(trader.trade());
         } catch (IOException e) {
             System.err.println(e.getMessage());

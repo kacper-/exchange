@@ -5,64 +5,87 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TraderTest {
 
     @Test
-    public void testEmptyBook() {
-        Trader trader = new Trader(Collections.emptyMap());
-        try {
-            String s = trader.trade();
-            Assert.assertEquals("", s);
-        } catch (IOException e) {
-            Assert.fail();
-        }
+    public void testEmptyBook() throws IOException {
+        Trader trader = new Trader(new HashMap<>());
+        String s = trader.trade();
+
+        Assert.assertEquals("", s);
     }
 
     @Test
-    public void testBookOnly() {
-        Map<String, List<Order>> book = new HashMap<>();
-        List<Order> buy = new ArrayList<>();
-        List<Order> sell = new ArrayList<>();
+    public void testEmptyFile() throws IOException {
+        Trader trader = new Trader(loadFromFile("t00.txt"));
+        String s = trader.trade();
 
-        buy.add(new Order("10000","B",98,25500));
-        buy.add(new Order("10003","B",99,50000));
-
-        sell.add(new Order("10005","S",105,20000));
-        sell.add(new Order("10001","S",100,500));
-        sell.add(new Order("10002","S",100,10000));
-        sell.add(new Order("10004","S",103,100));
-
-        book.put(BookBuilder.BUY, buy);
-        book.put(BookBuilder.SELL, sell);
-
-        Trader trader = new Trader(book);
-        try {
-            String s = trader.trade();
-
-            Assert.assertEquals("8ff13aad3e61429bfb5ce0857e846567", md5(s));
-        } catch (IOException e) {
-            Assert.fail();
-        }
+        Assert.assertEquals("", s);
     }
 
-    private String md5(String s) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    public void testBookWithMD5() throws IOException, NoSuchAlgorithmException {
+        Trader trader = new Trader(loadFromFile("t01.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("8ff13aad3e61429bfb5ce0857e846567", md5(s));
+    }
+
+    @Test
+    public void testTradeAndBookWithMD5() throws IOException, NoSuchAlgorithmException {
+        Trader trader = new Trader(loadFromFile("t02.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("ce8e7e5ab26ab5a7db6b7d30759cf02e", md5(s));
+    }
+
+    @Test
+    public void testOnlySell() throws IOException {
+        Trader trader = new Trader(loadFromFile("t03.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("                   |    105      20,000\n", s);
+    }
+
+    @Test
+    public void testOnlyBuy() throws IOException {
+        Trader trader = new Trader(loadFromFile("t04.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("     25,500     98 |                   \n", s);
+    }
+
+    @Test
+    public void testBrokenFileWithMD5() throws IOException, NoSuchAlgorithmException {
+        Trader trader = new Trader(loadFromFile("t05.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("ce8e7e5ab26ab5a7db6b7d30759cf02e", md5(s));
+    }
+
+    private String md5(String s) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(s.getBytes());
         byte[] bytes = md.digest();
         StringBuilder result = new StringBuilder();
-        for (byte b : bytes) {
+
+        for (byte b : bytes)
             result.append(String.format("%02x", b));
-        }
+
         return result.toString();
+    }
+
+    private Map<String, List<Order>> loadFromFile(String name) throws IOException {
+        InputStream in = getClass().getClassLoader().getResourceAsStream(name);
+        return BookBuilder.fromStream(in);
     }
 
 }

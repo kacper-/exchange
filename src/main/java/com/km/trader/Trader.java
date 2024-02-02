@@ -9,13 +9,20 @@ import java.io.IOException;
 import java.util.*;
 
 public class Trader {
+    private static final String BUY = "B";
+    private static final String SELL = "S";
     private final List<Trade> log = new ArrayList<>();
     private final LinkedList<Order> buy;
     private final LinkedList<Order> sell;
 
     public Trader(Map<String, List<Order>> book) {
-        this.buy = new LinkedList<>(book.getOrDefault(BookBuilder.BUY, Collections.emptyList()));
-        this.sell = new LinkedList<>(book.getOrDefault(BookBuilder.SELL, Collections.emptyList()));
+        book.putIfAbsent(BUY, Collections.emptyList());
+        book.putIfAbsent(SELL, Collections.emptyList());
+        book.get(BUY).sort(Comparator.comparingLong(Order::getPrice).reversed());
+        book.get(SELL).sort(Comparator.comparingLong(Order::getPrice));
+
+        this.buy = new LinkedList<>(book.get(BUY));
+        this.sell = new LinkedList<>(book.get(SELL));
     }
 
     public String trade() throws IOException {
