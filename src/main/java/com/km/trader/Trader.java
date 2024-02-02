@@ -8,6 +8,11 @@ import com.km.model.Trade;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Main logic class.
+ * Process book and creates transaction if possible
+ * Returns result in form of formatted string representation of transactions and book if not fully processed
+ */
 public class Trader {
     private static final String BUY = "B";
     private static final String SELL = "S";
@@ -15,6 +20,12 @@ public class Trader {
     private final LinkedList<Order> buy;
     private final LinkedList<Order> sell;
 
+    /**
+     * Creates instance based on BUY and SELL lists
+     * Applies sorting for both lists
+     *
+     * @param book map containing BUY and SELL lists
+     */
     public Trader(Map<String, List<Order>> book) {
         book.putIfAbsent(BUY, Collections.emptyList());
         book.putIfAbsent(SELL, Collections.emptyList());
@@ -25,6 +36,12 @@ public class Trader {
         this.sell = new LinkedList<>(book.get(SELL));
     }
 
+    /**
+     * Processes book and returns formatted transaction and book logs
+     *
+     * @return formatted output representing transactions and book
+     * @throws IOException
+     */
     public String trade() throws IOException {
         while (isTradeAvailable())
             settle();

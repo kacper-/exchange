@@ -1,5 +1,8 @@
 package com.km.model;
 
+/**
+ * Immutable transaction POJO class
+ */
 public class Trade {
     private final String buyId;
     private final String sellId;

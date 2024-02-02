@@ -2,13 +2,20 @@ package com.km.model;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({ "id", "type", "price", "quantity" })
+/**
+ * Immutable Order POJO class
+ * Used also as model/schema for jackson-databind CSV file loader
+ */
+@JsonPropertyOrder({"id", "type", "price", "quantity"})
 public class Order {
     private final String id;
     private final String type;
     private final long price;
     private final long quantity;
 
+    /**
+     * Workaround for jackson-databind iterator deserialization
+     */
     public Order() {
         id = null;
         type = null;

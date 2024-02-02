@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +68,14 @@ public class TraderTest {
         String s = trader.trade();
 
         Assert.assertEquals("ce8e7e5ab26ab5a7db6b7d30759cf02e", md5(s));
+    }
+
+    @Test
+    public void testAllSettled() throws IOException {
+        Trader trader = new Trader(loadFromFile("t06.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("trade 10000,10001,99,900\n", s);
     }
 
     private String md5(String s) throws NoSuchAlgorithmException {

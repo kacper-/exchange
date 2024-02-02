@@ -7,9 +7,16 @@ import com.km.model.Order;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Loads CVS file/stream into book.
+ * Book is a Map that contains two lists, BUY and SELL
+ */
 public class BookBuilder {
 
     public static Map<String, List<Order>> fromStream(InputStream in) throws IOException {

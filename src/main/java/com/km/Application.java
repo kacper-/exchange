@@ -5,6 +5,10 @@ import com.km.trader.Trader;
 
 import java.io.IOException;
 
+/**
+ * Application entry point
+ * Reads from STDIN and provides result to STDOUT
+ */
 public class Application {
     public static void main(String[] args) {
         try {

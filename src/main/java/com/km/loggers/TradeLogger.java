@@ -4,6 +4,10 @@ import com.km.model.Trade;
 
 import java.util.List;
 
+/**
+ * Creates string representation of transaction log
+ * Applies required formatting
+ */
 public class TradeLogger {
     private static final String END_LINE = "\n";
     private static final String PREFIX = "trade ";
