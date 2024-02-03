@@ -78,6 +78,14 @@ public class TraderTest {
         Assert.assertEquals("trade 10000,10001,99,900\n", s);
     }
 
+    @Test
+    public void testNullValueWithMD5() throws IOException, NoSuchAlgorithmException {
+        Trader trader = new Trader(loadFromFile("t07.txt"));
+        String s = trader.trade();
+
+        Assert.assertEquals("ce8e7e5ab26ab5a7db6b7d30759cf02e", md5(s));
+    }
+
     private String md5(String s) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(s.getBytes());

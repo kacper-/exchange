@@ -24,7 +24,17 @@ public class BookBuilder {
         Iterator<Order> iterator = read(in);
         iterator.forEachRemaining(list::add);
 
-        return list.stream().collect(Collectors.groupingBy(Order::getType));
+        List<Order> nonNullList = filterNulls(list);
+
+        return nonNullList.stream().collect(Collectors.groupingBy(Order::getType));
+    }
+
+    private static List<Order> filterNulls(List<Order> list) {
+        return list.stream()
+                .filter(o -> !o.getId().isEmpty())
+                .filter(o -> o.getPrice() > 0)
+                .filter(o -> o.getQuantity() > 0)
+                .collect(Collectors.toList());
     }
 
     private static Iterator<Order> read(InputStream in) throws IOException {
