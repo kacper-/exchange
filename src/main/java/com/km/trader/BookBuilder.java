@@ -32,6 +32,7 @@ public class BookBuilder {
     private static List<Order> filterNulls(List<Order> list) {
         return list.stream()
                 .filter(o -> !o.getId().isEmpty())
+                .filter(o -> !o.getType().isEmpty())
                 .filter(o -> o.getPrice() > 0)
                 .filter(o -> o.getQuantity() > 0)
                 .collect(Collectors.toList());
