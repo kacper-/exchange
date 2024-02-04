@@ -29,6 +29,12 @@ public class BookBuilder {
         return nonNullList.stream().collect(Collectors.groupingBy(Order::getType));
     }
 
+    /**
+     * This method just ignores wrong records/lines from input
+     *
+     * @param list lines from input
+     * @return cleaned list
+     */
     private static List<Order> filterNulls(List<Order> list) {
         return list.stream()
                 .filter(o -> !o.getId().isEmpty())
@@ -38,6 +44,13 @@ public class BookBuilder {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Reads from given InputStream ignoring empty lines
+     *
+     * @param in input data
+     * @return data deserialized to collection of Order objects
+     * @throws IOException
+     */
     private static Iterator<Order> read(InputStream in) throws IOException {
         return new CsvMapper()
                 .readerWithTypedSchemaFor(Order.class)
